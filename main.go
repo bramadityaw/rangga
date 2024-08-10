@@ -7,7 +7,10 @@ import (
 )
 
 func exit(code int) string {
-	return fmt.Sprintf("%smov rax, 60\n%smov rdi, %d\n%s%s", INDENT, INDENT, code, INDENT, CALL)
+	//	return fmt.Sprintf("%smov rax, 60\n%smov rdi, %d\n%s%s", INDENT, INDENT, code, INDENT, CALL)
+	return INDENT + "mov rax, 60\n" +
+		INDENT + fmt.Sprintf("mov rdi, %d\n", code) +
+		INDENT + CALL
 }
 
 const (
@@ -18,7 +21,7 @@ const (
 
 func main() {
 	exe_name := "program"
-	asm := []byte(ENTRY + exit(0))
+	asm := []byte(ENTRY + exit(8))
 
 	if err := os.WriteFile(exe_name+".asm", asm, 0644); err != nil {
 		fmt.Println("Gagal membuat file assembly:", err)
