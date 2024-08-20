@@ -18,10 +18,13 @@ const (
 	INTEGER TokenType = iota
 
 	// Operators
-	PLUS  // +
-	MINUS // -
-	STAR  // *
-	SLASH // /
+	PLUS    // +
+	MINUS   // -
+	BINTANG // *
+	GARING  // /
+
+	KURUNG_BUKA
+	KURUNG_TUTUP
 
 	IDENT
 
@@ -32,13 +35,17 @@ func (t Token) String() string {
 	switch t.Type {
 	case INTEGER:
 		return t.Lexeme
+	case KURUNG_BUKA:
+		return "("
+	case KURUNG_TUTUP:
+		return ")"
 	case PLUS:
 		return "+"
 	case MINUS:
 		return "-"
-	case STAR:
+	case BINTANG:
 		return "*"
-	case SLASH:
+	case GARING:
 		return "/"
 	case IDENT:
 		return t.Lexeme
@@ -60,8 +67,8 @@ type Lexer struct {
 	col     int
 }
 
-func New(src string) Lexer {
-	return Lexer{
+func New(src string) *Lexer {
+	return &Lexer{
 		src: src,
 
 		line: 1,
@@ -86,17 +93,21 @@ func (l *Lexer) lex() {
 	switch c {
 	case ' ', '\t', '\r':
 		break
+	case '(':
+		l.tokens = append(l.tokens, Token{Type: KURUNG_BUKA, Lexeme: "", Line: l.line, Col: l.col})
+	case ')':
+		l.tokens = append(l.tokens, Token{Type: KURUNG_TUTUP, Lexeme: "", Line: l.line, Col: l.col})
 	case '+':
 		l.tokens = append(l.tokens, Token{Type: PLUS, Lexeme: "", Line: l.line, Col: l.col})
 		break
 	case '*':
-		l.tokens = append(l.tokens, Token{Type: STAR, Lexeme: "", Line: l.line, Col: l.col})
+		l.tokens = append(l.tokens, Token{Type: BINTANG, Lexeme: "", Line: l.line, Col: l.col})
 		break
 	case '-':
 		l.tokens = append(l.tokens, Token{Type: MINUS, Lexeme: "", Line: l.line, Col: l.col})
 		break
 	case '/':
-		l.tokens = append(l.tokens, Token{Type: SLASH, Lexeme: "", Line: l.line, Col: l.col})
+		l.tokens = append(l.tokens, Token{Type: GARING, Lexeme: "", Line: l.line, Col: l.col})
 		break
 	case '\n':
 		l.line++
@@ -134,8 +145,13 @@ func (l *Lexer) num() {
 
 func (l *Lexer) ident() {
 	for isAlphaNum(l.peek()) {
-		l.next()
+		l.forward()
 	}
+	l.tokens = append(l.tokens, Token{
+		Type:   IDENT,
+		Lexeme: string(l.src[l.start:l.current]),
+		Line:   l.line,
+	})
 }
 
 func (l *Lexer) shouldEnd() bool {

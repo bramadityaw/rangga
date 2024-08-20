@@ -18,8 +18,7 @@ const (
 	CALL   = "syscall\n"
 	INDENT = "\t"
 
-	//	program = "cetak 2"
-	program = "23 + 2"
+	program = "cetak (23 + 2 * 8)"
 )
 
 func main() {
@@ -66,8 +65,7 @@ func compile(exe_name string) {
 }
 
 func interpret(program string) {
-	lexer := lexer.New(program)
-	tokens := lexer.Tokens()
+	tokens := lexer.New(program).Tokens()
 	//	print(len(tokens))
 	for i, token := range tokens {
 		fmt.Printf("%d: %v \n", i, token)
