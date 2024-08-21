@@ -92,26 +92,21 @@ func (l *Lexer) lex() {
 
 	switch c {
 	case ' ', '\t', '\r':
-		break
+		// lewati whitespace
 	case '(':
 		l.tokens = append(l.tokens, Token{Type: KURUNG_BUKA, Lexeme: "", Line: l.line, Col: l.col})
 	case ')':
 		l.tokens = append(l.tokens, Token{Type: KURUNG_TUTUP, Lexeme: "", Line: l.line, Col: l.col})
 	case '+':
 		l.tokens = append(l.tokens, Token{Type: PLUS, Lexeme: "", Line: l.line, Col: l.col})
-		break
 	case '*':
 		l.tokens = append(l.tokens, Token{Type: BINTANG, Lexeme: "", Line: l.line, Col: l.col})
-		break
 	case '-':
 		l.tokens = append(l.tokens, Token{Type: MINUS, Lexeme: "", Line: l.line, Col: l.col})
-		break
 	case '/':
 		l.tokens = append(l.tokens, Token{Type: GARING, Lexeme: "", Line: l.line, Col: l.col})
-		break
 	case '\n':
 		l.line++
-		break
 	default:
 		if isDigit(c) {
 			l.num()
@@ -120,7 +115,6 @@ func (l *Lexer) lex() {
 		} else {
 			fmt.Printf("\n")
 		}
-		break
 	}
 }
 
