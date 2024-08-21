@@ -17,30 +17,37 @@ const (
 	ENTRY  = "global _start\n_start:\n"
 	CALL   = "syscall\n"
 	INDENT = "\t"
-
-	program = "cetak (23 + 2 * 8)"
 )
 
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
 		usage()
-		os.Exit(1)
+	} else if len(args) == 1 {
+		fmt.Printf("File .rng tidak disediakan\n\n")
+		usage()
+	}
+
+	program, err := os.ReadFile(args[1])
+	if err != nil {
+		fmt.Printf("Gagal membuka file %s:\n"+
+			"File tidak ditemukan.", args[1])
 	}
 
 	switch args[0] {
 	case "susun":
 		compile("program")
 	case "jalan":
-		interpret(program)
+		interpret(string(program))
 	}
 }
 
 func usage() {
-	fmt.Println("Pemakaian: rangga [PERINTAH]")
+	fmt.Println("Pemakaian: rangga [PERINTAH] <file>.rng")
 	fmt.Printf("Perintah tersedia:\n" +
 		"susun \t: menyusun kode sumber menjadi program yang dapat dijalankan\n" +
 		"jalan \t: menjalankan program tanpa menyusun\n")
+	os.Exit(1)
 }
 
 func compile(exe_name string) {
